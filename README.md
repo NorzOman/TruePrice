@@ -80,46 +80,6 @@ Over time this builds a **large price history dataset**.
 
 ---
 
-## 🧠 How It Works
-
-1. User visits an e-commerce product page.
-2. The browser extension extracts the product price and metadata.
-3. The data is sent to the **TruePrice backend API**.
-4. The backend stores it in the **price history database**.
-5. The extension retrieves historical data and displays:
-   - Price graph
-   - Discount analysis
-   - Historical statistics
-
----
-
-## 📊 Example Output
-
-- Current Price: ₹4,999  
-- Average Price: ₹4,850  
-- Lowest Price: ₹4,200  
-- Highest Price: ₹9,999  
-
-**Discount Analysis:**  
-⚠ The current discount is likely **misleading**.
-
----
-
-## 🎯 Goal
-
-Help users **avoid fake discounts**, make **smarter buying decisions**, and increase **transparency in e-commerce pricing**.
-
----
-
-## 🛠 Future Improvements
-
-- AI-based discount authenticity scoring  
-- Deal alerts when price drops below historical average  
-- Mobile app integration  
-- Support for more international e-commerce platforms  
-
----
-
 ## 📄 License
 
 MIT License
