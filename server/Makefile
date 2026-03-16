@@ -1,6 +1,6 @@
 
 all:
-	g++ -I.include/ src/main.cpp -o build/main
+	g++ -static -I.include/ src/server.cpp -o build/server
 
 clean:
 	rm -rf build/*
