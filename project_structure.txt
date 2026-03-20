@@ -1,0 +1,20 @@
+.
+├── LICENSE
+├── project_structure.txt
+├── README.md
+├── extension
+│   ├── content.js
+│   ├── manifest.json
+│   ├── popup.html
+│   └── popup.js
+└── server
+    ├── Dockerfile
+    ├── Makefile
+    ├── build
+    │   └── server
+    ├── include
+    │   ├── asio.hpp
+    │   ├── crow.h
+    │   └── json.hpp
+    └── src
+        └── server.cpp
