@@ -1,0 +1,25 @@
+project:
+  LICENSE: file
+  project_structure.txt: file
+  README.md: file
+
+  extension:
+    content.js: file
+    manifest.json: file
+    popup.html: file
+    popup.js: file
+
+  server:
+    Dockerfile: file
+    Makefile: file
+
+    build:
+      server: file
+
+    include:
+      asio.hpp: file
+      crow.h: file
+      json.hpp: file
+
+    src:
+      server.cpp: file
