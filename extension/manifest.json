@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "TruePrice",
+  "version": "1.0",
+  "description": "Crowdsourced Price Tracker & Fake Discount Detector",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://*.amazon.in/*",
+    "http://localhost:8000/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.amazon.in/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
