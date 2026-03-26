@@ -1,85 +1,59 @@
 # TruePrice – Detect Fake Discounts & Track Product Price History
 
-TruePrice is a browser extension and backend system that helps users detect **fake discounts** and understand the **real price** of products across e-commerce platforms.
+TruePrice is a full-stack browser extension and containerized C++ backend designed to expose misleading e-commerce discounts. Instead of relying on easily manipulated "M.R.P." (Maximum Retail Price) tags, TruePrice tracks the actual historical selling price of an item to determine if a sale is a genuine deal or a psychological pricing trick.
 
-Many online stores inflate the *“original price”* to show large discounts. **TruePrice** solves this by tracking historical prices and showing users the **actual minimum, average, and maximum price** for a product.
+## Key Features
 
-The extension displays a **price history graph** and determines whether the current discount is **genuine or misleading**.
+* **Real-Time Price Tracking:** Automatically logs the exact selling price of Amazon products as you browse.
+* **Deceptive Discount Detection:** Compares the website's advertised discount against a true 30-day historical average to expose inflated M.R.P. claims.
+* **Market Volatility Metric:** Calculates price fluctuations to inform users if a product's price is highly unstable.
+* **In-Memory C++ Database:** Ultra-fast, lightweight custom backend handling concurrent price logging.
+* **Modern UI:** Clean, WhiteSur-inspired interface utilizing Adwaita Sans and Chart.js for beautiful data visualization.
+
+## Architecture Stack
+
+**Frontend (Browser Extension)**
+* **Core:** JavaScript (Manifest V3 API)
+* **Communication:** Background Service Workers (CORS bypass)
+* **Data Visualization:** Chart.js (Local dependency for CSP compliance)
+* **Styling:** Custom CSS (WhiteSur Solid Light Theme)
+
+**Backend (Server)**
+* **Language:** C++17
+* **Framework:** Crow (C++ Microframework)
+* **Networking:** Standalone ASIO (asio-dev)
+* **Database:** nlohmann/json (In-Memory JSON store)
+* **Infrastructure:** Docker & Alpine Linux
 
 ---
 
-## 🚀 Features
+## Installation & Setup
 
-### 1. Fake Discount Detection
+### Prerequisites
+* Docker Desktop installed and running.
+* A Chromium-based browser (Chrome, Brave, Edge).
 
-Analyzes historical price data to determine whether a discount is legitimate.
-
-**Example**
+### 1. Spin up the Backend (Docker)
+The backend is completely containerized. You do not need a local C++ compiler to run it.
 
 ```
-Claimed price: ₹9,999 → ₹4,999 (50% OFF)
+# Clone the repository
+git clone [https://github.com/yourusername/TruePrice.git](https://github.com/yourusername/TruePrice.git)
+cd TruePrice/server
 
-Historical analysis:
-Average price: ₹4,850
-
-Result:
-⚠ Discount is misleading — product usually sells near the current price.
+# Build the Docker image (Compiles the C++ code automatically)
+docker build -t trueprice-backend .
 ```
 
----
-
-### 2. Price History Tracking
-
-TruePrice continuously tracks product prices and stores them in a database.
-
-**Stored metrics include:**
-
-- Current price  
-- Minimum historical price  
-- Maximum historical price  
-- Average price  
-- Median price  
-- Timestamped price history  
+### 2. Install the Extension (Frontend)
+1. Open your browser and navigate to the extensions management page.
+2. Enable **Developer mode** in the top right corner.
+3. Click **Load unpacked** and select the `extension/` folder from this repository.
+4. Pin the TruePrice icon to your browser toolbar for quick access.
 
 ---
 
-### 3. Price Graph Visualization
-
-Users can view a **visual price trend directly inside the browser**.
-
-The graph shows:
-
-- Historical price movement  
-- Price spikes  
-- Seasonal discounts  
-- Lowest historical price  
-
----
-
-### 4. Cross-Site Tracking
-
-TruePrice can monitor products across multiple websites including:
-
-- Amazon  
-- Flipkart  
-- Myntra  
-- Ajio  
-- Other major e-commerce stores  
-
----
-
-### 5. Crowdsourced Price Collection
-
-When a user visits a product page:
-
-1. The extension extracts the product price.
-2. The price is sent to the backend API.
-3. The backend stores the data as a new price entry.
-
-Over time this builds a **large price history dataset**.
-
----
-
-## 📄 License
-
-MIT License
+### 3. Run the server on port 8000
+```
+docker run -p 8000:8000 trueprice-backend
+```
