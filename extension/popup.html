@@ -3,31 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <title>TruePrice</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="chart.js"></script>
     <style>
-        body { width: 350px; padding: 15px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        h2 { margin: 0 0 10px 0; color: #333; font-size: 18px; }
-        .loading { color: #666; font-style: italic; }
-        .error { color: #d32f2f; display: none; }
-        .stats { display: flex; justify-content: space-between; margin-bottom: 15px; background: #f5f5f5; padding: 10px; border-radius: 5px; }
-        .stat-box { text-align: center; }
-        .stat-value { font-weight: bold; font-size: 16px; color: #1976d2; }
-        canvas { max-width: 100%; margin-top: 10px; }
+        @import url('https://fonts.cdnfonts.com/css/adwaita');
+        
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-base: #f4f5f5;      
+            --bg-card: #ffffff;      
+            --text-main: #242424;    
+            --text-muted: #6e6e6e;   
+            --accent: #3584e4;       
+            --success: #26a269;      
+            --success-bg: #e5f4ec;
+            --danger: #e01b24;       
+            --danger-bg: #fbeded;
+            --warning: #b47d00;
+            --warning-bg: #fcf4d6;
+            --border: #e4e4e4;
+        }
+
+        body { 
+            width: 360px; 
+            margin: 0; 
+            padding: 16px; 
+            font-family: 'Adwaita Sans', system-ui, -apple-system, sans-serif; 
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .header {
+            text-align: center; font-size: 16px; font-weight: 800; color: var(--text-main);
+            margin-bottom: 16px; letter-spacing: -0.2px;
+        }
+
+        .state-msg { text-align: center; padding: 20px; color: var(--text-muted); font-size: 13px; }
+
+        .card {
+            background: var(--bg-card); border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); border: 1px solid rgba(0,0,0,0.06);
+            padding: 16px; margin-bottom: 12px;
+        }
+
+        #verdictBox {
+            padding: 10px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-align: center;
+            margin-bottom: 12px; display: none; letter-spacing: 0.2px;
+        }
+
+        .hero-section { display: flex; justify-content: space-between; align-items: flex-end; }
+        .hero-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .hero-price { font-size: 30px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
+        
+        #priceChange { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 800; margin-bottom: 4px;}
+
+        .chart-wrapper { position: relative; height: 190px; width: 100%; padding: 12px 16px 16px 16px; }
+        
+        .volatility-badge {
+            position: absolute; top: 12px; right: 16px;
+            background: rgba(255, 255, 255, 0.9); border: 1px solid var(--border);
+            padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800;
+            color: var(--text-muted); z-index: 10;
+        }
     </style>
 </head>
 <body>
-    <h2>📈 TruePrice Tracker</h2>
+    <div class="header">TruePrice</div>
     
-    <div id="loading" class="loading">Loading price history...</div>
-    <div id="error" class="error">No price history available or not an Amazon product page.</div>
+    <div id="loading" class="state-msg">Loading market data...</div>
+    <div id="error" class="state-msg" style="display:none;"></div>
 
     <div id="content" style="display: none;">
-        <div class="stats">
-            <div class="stat-box">Lowest<br><span id="minPrice" class="stat-value">-</span></div>
-            <div class="stat-box">Average<br><span id="avgPrice" class="stat-value">-</span></div>
-            <div class="stat-box">Highest<br><span id="maxPrice" class="stat-value">-</span></div>
+        <div id="verdictBox"></div>
+
+        <div class="card">
+            <div class="hero-section">
+                <div>
+                    <div class="hero-label">Current Price</div>
+                    <div id="currentPrice" class="hero-price">-</div>
+                </div>
+                <div id="priceChange"></div>
+            </div>
         </div>
-        <canvas id="priceChart"></canvas>
+
+        <div class="card chart-wrapper">
+            <div class="volatility-badge">VOLATILITY: <span id="volatility">-</span></div>
+            <canvas id="priceChart"></canvas>
+        </div>
     </div>
 
     <script src="popup.js"></script>

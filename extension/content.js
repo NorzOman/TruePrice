@@ -1,65 +1,41 @@
-// Function to extract Amazon's unique product ID (ASIN) from the URL
 function getASIN() {
-    const match = window.location.href.match(/([a-zA-Z0-9]{10})(?:[/?]|$)/);
-    return match ? match[1] : null;
+    const match = window.location.href.match(/(?:dp|o|ASIN|product)\/([a-zA-Z0-9]{10})/i);
+    if (match) return match[1].toUpperCase();
+    const hiddenAsin = document.querySelector('#ASIN');
+    return hiddenAsin ? hiddenAsin.value : null;
 }
 
-// Function to get the current date in YYYY-MM-DD format (for local storage tracking)
-function getTodayDate() {
-    return new Date().toISOString().split('T')[0];
-}
-
-// Function to scrape the price
 function getAmazonPrice() {
     const priceElement = document.querySelector('.a-price-whole');
-    if (!priceElement) return null;
-    // Remove commas and dots to get a clean number string
-    return priceElement.innerText.replace(/,/g, '').replace(/\./g, '').trim();
+    return priceElement ? priceElement.innerText.replace(/[^\d]/g, '') : null;
 }
 
-async function processProduct() {
+function getAmazonMRP() {
+    const mrpElement = document.querySelector('.a-text-price span[aria-hidden="true"]');
+    return mrpElement ? mrpElement.innerText.replace(/[^\d]/g, '') : null;
+}
+
+function processProduct() {
     const uid = getASIN();
     const price = getAmazonPrice();
+    const mrp = getAmazonMRP();
 
-    if (!uid || !price) return; // Not a valid product page
+    if (!uid || !price) return;
 
-    const today = getTodayDate();
-    const storageKey = `trueprice_${uid}_${today}`;
+    // Save MRP to local storage so the popup can use it for mismatch logic
+    if (mrp) {
+        let storageObj = {};
+        storageObj[`mrp_${uid}`] = mrp;
+        chrome.storage.local.set(storageObj);
+    }
 
-    // 1. Check local storage to prevent duplicate sends on the same day
-    chrome.storage.local.get([storageKey], async function(result) {
-        if (result[storageKey]) {
-            console.log("TruePrice: Price already recorded today for this product.");
-            return;
-        }
+    const data = {
+        uid: uid,
+        timestamp: new Date().toISOString(),
+        price: price
+    };
 
-        // 2. Prepare data for C++ backend
-        const data = {
-            uid: uid,
-            timestamp: new Date().toISOString(),
-            price: price
-        };
-
-        // 3. Send to C++ Server
-        try {
-            const response = await fetch("http://localhost:8000/api/post/price", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            });
-            
-            if (response.ok) {
-                console.log("TruePrice: Successfully saved price to database!");
-                // 4. Mark as saved in local storage for today
-                let storageObj = {};
-                storageObj[storageKey] = true;
-                chrome.storage.local.set(storageObj);
-            }
-        } catch (error) {
-            console.error("TruePrice: Failed to connect to backend API.", error);
-        }
-    });
+    chrome.runtime.sendMessage({ type: "SAVE_PRICE", data: data });
 }
 
-// Run the script
-processProduct();
+setTimeout(processProduct, 1500);
