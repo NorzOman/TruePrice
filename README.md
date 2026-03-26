@@ -38,7 +38,7 @@ The backend is completely containerized. You do not need a local C++ compiler to
 
 ```
 # Clone the repository
-git clone [https://github.com/yourusername/TruePrice.git](https://github.com/yourusername/TruePrice.git)
+git clone https://github.com/NorzOman/TruePrice.git
 cd TruePrice/server
 
 # Build the Docker image (Compiles the C++ code automatically)
