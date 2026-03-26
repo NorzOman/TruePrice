@@ -16,14 +16,14 @@ TruePrice is a full-stack browser extension and containerized C++ backend design
 * **Core:** JavaScript (Manifest V3 API)
 * **Communication:** Background Service Workers (CORS bypass)
 * **Data Visualization:** Chart.js (Local dependency for CSP compliance)
-* **Styling:** Custom CSS (WhiteSur Solid Light Theme)
+* **Styling:** Custom CSS
 
 **Backend (Server)**
 * **Language:** C++17
 * **Framework:** Crow (C++ Microframework)
 * **Networking:** Standalone ASIO (asio-dev)
 * **Database:** nlohmann/json (In-Memory JSON store)
-* **Infrastructure:** Docker & Alpine Linux
+* **Infrastructure:** Docker & Linux
 
 ---
 
