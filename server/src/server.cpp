@@ -77,5 +77,21 @@ int main(){
         }
     });
 
+    CROW_ROUTE(app, "/api/dump").methods(crow::HTTPMethod::GET)([&db](){
+        crow::json::wvalue res;
+        try {
+            res["status"] = "success";
+            res["response"] = crow::json::load(db.dump()); 
+            crow::response r(res);           
+            r.set_header("Content-Type", "application/json");
+            return r;
+        } catch (const std::exception &e) {
+            res["status"] = "failed";
+            res["response"] = e.what();
+            return crow::response(500, res);
+        }
+    });
+
+
     app.port(8000).run();
 }
