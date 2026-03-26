@@ -8,7 +8,6 @@ TruePrice is a full-stack browser extension and containerized C++ backend design
 * **Deceptive Discount Detection:** Compares the website's advertised discount against a true 30-day historical average to expose inflated M.R.P. claims.
 * **Market Volatility Metric:** Calculates price fluctuations to inform users if a product's price is highly unstable.
 * **In-Memory C++ Database:** Ultra-fast, lightweight custom backend handling concurrent price logging.
-* **Modern UI:** Clean, WhiteSur-inspired interface utilizing Adwaita Sans and Chart.js for beautiful data visualization.
 
 ## Architecture Stack
 
