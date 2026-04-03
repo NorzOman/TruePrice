@@ -1,100 +1,344 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>TruePrice</title>
-    <script src="chart.js"></script>
-    <style>
-        @import url('https://fonts.cdnfonts.com/css/adwaita');
-        
-        * {
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TruePrice</title>
 
-        :root {
-            --bg-base: #f4f5f5;      
-            --bg-card: #ffffff;      
-            --text-main: #242424;    
-            --text-muted: #6e6e6e;   
-            --accent: #3584e4;       
-            --success: #26a269;      
-            --success-bg: #e5f4ec;
-            --danger: #e01b24;       
-            --danger-bg: #fbeded;
-            --warning: #b47d00;
-            --warning-bg: #fcf4d6;
-            --border: #e4e4e4;
-        }
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="chart.js"></script>
 
-        body { 
-            width: 360px; 
-            margin: 0; 
-            padding: 16px; 
-            font-family: 'Adwaita Sans', system-ui, -apple-system, sans-serif; 
-            background-color: var(--bg-base);
-            color: var(--text-main);
-            -webkit-font-smoothing: antialiased;
-        }
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .header {
-            text-align: center; font-size: 16px; font-weight: 800; color: var(--text-main);
-            margin-bottom: 16px; letter-spacing: -0.2px;
-        }
+    :root {
+      --background: oklch(1.0000 0 0);
+      --foreground: oklch(0.2101 0.0318 264.6645);
+      --card: oklch(1.0000 0 0);
+      --card-foreground: oklch(0.2101 0.0318 264.6645);
+      --popover: oklch(1.0000 0 0);
+      --popover-foreground: oklch(0.2101 0.0318 264.6645);
+      --primary: oklch(0.6716 0.1368 48.5130);
+      --primary-foreground: oklch(1.0000 0 0);
+      --secondary: oklch(0.5360 0.0398 196.0280);
+      --secondary-foreground: oklch(1.0000 0 0);
+      --muted: oklch(0.9670 0.0029 264.5419);
+      --muted-foreground: oklch(0.5510 0.0234 264.3637);
+      --accent: oklch(0.9491 0 0);
+      --accent-foreground: oklch(0.2101 0.0318 264.6645);
+      --destructive: oklch(0.6368 0.2078 25.3313);
+      --destructive-foreground: oklch(0.9851 0 0);
+      --border: oklch(0.9276 0.0058 264.5313);
+      --input: oklch(0.9276 0.0058 264.5313);
+      --ring: oklch(0.6716 0.1368 48.5130);
+      --chart-1: oklch(0.5940 0.0443 196.0233);
+      --chart-2: oklch(0.7214 0.1337 49.9802);
+      --chart-3: oklch(0.8721 0.0864 68.5474);
+      --chart-4: oklch(0.6268 0 0);
+      --chart-5: oklch(0.6830 0 0);
+      --font-sans: "JetBrains Mono", ui-monospace, monospace;
+      --font-ui: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      --radius: 0.75rem;
+      --tracking-normal: 0rem;
+      --shadow: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 1px 2px -1px hsl(0 0% 0% / 0.05);
+    }
 
-        .state-msg { text-align: center; padding: 20px; color: var(--text-muted); font-size: 13px; }
+    .dark {
+      --background: oklch(0.1797 0.0043 308.1928);
+      --foreground: oklch(0.8109 0 0);
+      --card: oklch(0.1822 0 0);
+      --card-foreground: oklch(0.8109 0 0);
+      --popover: oklch(0.1797 0.0043 308.1928);
+      --popover-foreground: oklch(0.8109 0 0);
+      --primary: oklch(0.7214 0.1337 49.9802);
+      --primary-foreground: oklch(0.1797 0.0043 308.1928);
+      --secondary: oklch(0.5940 0.0443 196.0233);
+      --secondary-foreground: oklch(0.1797 0.0043 308.1928);
+      --muted: oklch(0.2520 0 0);
+      --muted-foreground: oklch(0.6268 0 0);
+      --accent: oklch(0.3211 0 0);
+      --accent-foreground: oklch(0.8109 0 0);
+      --destructive: oklch(0.5940 0.0443 196.0233);
+      --destructive-foreground: oklch(0.1797 0.0043 308.1928);
+      --border: oklch(0.2520 0 0);
+      --input: oklch(0.2520 0 0);
+      --ring: oklch(0.7214 0.1337 49.9802);
+      --chart-1: oklch(0.5940 0.0443 196.0233);
+      --chart-2: oklch(0.7214 0.1337 49.9802);
+      --chart-3: oklch(0.8721 0.0864 68.5474);
+      --chart-4: oklch(0.6268 0 0);
+      --chart-5: oklch(0.6830 0 0);
+      --shadow: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 1px 2px -1px hsl(0 0% 0% / 0.05);
+    }
 
-        .card {
-            background: var(--bg-card); border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); border: 1px solid rgba(0,0,0,0.06);
-            padding: 16px; margin-bottom: 12px;
-        }
+    body {
+      width: 420px;
+      background: var(--background);
+      font-family: var(--font-sans);
+      letter-spacing: var(--tracking-normal);
+      color: var(--foreground);
+      padding: 16px 16px 18px;
+    }
 
-        #verdictBox {
-            padding: 10px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-align: center;
-            margin-bottom: 12px; display: none; letter-spacing: 0.2px;
-        }
+    .app {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
 
-        .hero-section { display: flex; justify-content: space-between; align-items: flex-end; }
-        .hero-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-        .hero-price { font-size: 30px; font-weight: 800; letter-spacing: -1px; line-height: 1; }
-        
-        #priceChange { padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 800; margin-bottom: 4px;}
+    /* Cards live here — this gap was missing, so blocks looked stuck together */
+    #content {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
 
-        .chart-wrapper { position: relative; height: 190px; width: 100%; padding: 12px 16px 16px 16px; }
-        
-        .volatility-badge {
-            position: absolute; top: 12px; right: 16px;
-            background: rgba(255, 255, 255, 0.9); border: 1px solid var(--border);
-            padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: 800;
-            color: var(--text-muted); z-index: 10;
-        }
-    </style>
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 2px 2px;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .brandTitle {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      color: var(--foreground);
+      line-height: 1.15;
+    }
+
+    .brandSub {
+      font-size: 11px;
+      color: var(--muted-foreground);
+      line-height: 1.1;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: color-mix(in oklab, var(--card) 92%, black 8%);
+      color: var(--foreground);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 120ms ease, border-color 120ms ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: color-mix(in oklab, var(--card) 86%, var(--accent) 14%);
+    }
+
+    .btn:active {
+      background: color-mix(in oklab, var(--card) 82%, var(--accent) 18%);
+    }
+
+    .btnPrimary {
+      border-color: color-mix(in oklab, var(--primary) 55%, var(--border) 45%);
+      background: color-mix(in oklab, var(--primary) 18%, var(--card) 82%);
+      color: var(--foreground);
+    }
+
+    .btnPrimary:hover {
+      background: color-mix(in oklab, var(--primary) 22%, var(--card) 78%);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .state {
+      font-size: 13px;
+      color: var(--muted-foreground);
+      text-align: center;
+      padding: 16px 6px;
+    }
+
+    .heroRow {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .heroMeta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .heroLabel {
+      font-size: 12px;
+      color: var(--muted-foreground);
+      font-weight: 600;
+      line-height: 1.1;
+    }
+
+    .price {
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1;
+    }
+
+    .badge {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 11px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: color-mix(in oklab, var(--muted) 45%, var(--card) 55%);
+      color: var(--muted-foreground);
+      line-height: 1;
+    }
+
+    .divider {
+      height: 1px;
+      background: color-mix(in oklab, var(--border) 70%, transparent 30%);
+      margin: 16px 0;
+    }
+
+    .statsGrid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .stat {
+      border: 1px solid color-mix(in oklab, var(--border) 80%, transparent 20%);
+      background: color-mix(in oklab, var(--muted) 55%, var(--card) 45%);
+      border-radius: calc(var(--radius) - 4px);
+      padding: 12px 12px;
+      min-width: 0;
+    }
+
+    .statLabel {
+      font-size: 10px;
+      color: var(--muted-foreground);
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+      line-height: 1.1;
+    }
+
+    .statValue {
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--card-foreground);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chartCard {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-top: 2px;
+    }
+
+    .chart-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2px 2px 0;
+    }
+
+    .chart-title {
+      font-size: 12px;
+      color: var(--muted-foreground);
+      font-weight: 700;
+    }
+
+    .chart {
+      height: 220px;
+      margin-top: 2px;
+      padding: 4px 0 0;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  </style>
 </head>
-<body>
-    <div class="header">TruePrice</div>
-    
-    <div id="loading" class="state-msg">Loading market data...</div>
-    <div id="error" class="state-msg" style="display:none;"></div>
+<body class="dark">
 
-    <div id="content" style="display: none;">
-        <div id="verdictBox"></div>
+<div class="app">
 
-        <div class="card">
-            <div class="hero-section">
-                <div>
-                    <div class="hero-label">Current Price</div>
-                    <div id="currentPrice" class="hero-price">-</div>
-                </div>
-                <div id="priceChange"></div>
-            </div>
+  <div class="header">
+    <div class="brand">
+      <div class="brandTitle">TruePrice</div>
+      <div class="brandSub">Price history for this product</div>
+    </div>
+    <button id="dashboardBtn" class="btn btnPrimary">Dashboard</button>
+  </div>
+
+  <div id="loading" class="state">Loading market data...</div>
+  <div id="error" class="state" style="display:none;"></div>
+
+  <div id="content" style="display:none;">
+
+    <div class="card">
+      <div class="heroRow">
+        <div class="heroMeta">
+          <div class="heroLabel">Current price</div>
+          <div id="currentPrice" class="price">-</div>
         </div>
+        <div id="priceChange" class="badge"></div>
+      </div>
 
-        <div class="card chart-wrapper">
-            <div class="volatility-badge">VOLATILITY: <span id="volatility">-</span></div>
-            <canvas id="priceChart"></canvas>
+      <div class="divider"></div>
+
+      <div class="statsGrid">
+        <div class="stat">
+          <div class="statLabel">Min</div>
+          <div id="minStat" class="statValue">-</div>
         </div>
+        <div class="stat">
+          <div class="statLabel">Max</div>
+          <div id="maxStat" class="statValue">-</div>
+        </div>
+        <div class="stat">
+          <div class="statLabel">Days</div>
+          <div id="daysStat" class="statValue">-</div>
+        </div>
+      </div>
     </div>
 
-    <script src="popup.js"></script>
+    <div class="card chartCard">
+      <div class="chart-top">
+        <div class="chart-title">Price history</div>
+      </div>
+
+      <div class="chart">
+        <canvas id="priceChart"></canvas>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="popup.js"></script>
+
 </body>
 </html>

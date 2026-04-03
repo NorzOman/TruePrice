@@ -2,11 +2,12 @@
   "manifest_version": 3,
   "name": "TruePrice",
   "version": "1.0",
-  "description": "Crowdsourced Price Tracker & Fake Discount Detector",
+  "description": "Crowdsourced Amazon price tracker with history charts.",
   "permissions": [
     "activeTab",
     "scripting",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "host_permissions": [
     "https://*.amazon.in/*",
@@ -15,7 +16,19 @@
   "background": {
     "service_worker": "background.js"
   },
+  "icons": {
+    "16": "logo.png",
+    "32": "logo.png",
+    "48": "logo.png",
+    "128": "logo.png"
+  },
   "action": {
+    "default_icon": {
+      "16": "logo.png",
+      "32": "logo.png",
+      "48": "logo.png",
+      "128": "logo.png"
+    },
     "default_popup": "popup.html"
   },
   "content_scripts": [
@@ -23,6 +36,13 @@
       "matches": ["https://*.amazon.in/*"],
       "js": ["content.js"],
       "run_at": "document_idle"
+    }
+  ],
+
+  "web_accessible_resources": [
+    {
+      "resources": ["dashboard.html"],
+      "matches": ["<all_urls>"]
     }
   ]
 }

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TruePrice Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="chart.js"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --background: oklch(1.0000 0 0);
+      --foreground: oklch(0.2101 0.0318 264.6645);
+      --card: oklch(1.0000 0 0);
+      --card-foreground: oklch(0.2101 0.0318 264.6645);
+      --popover: oklch(1.0000 0 0);
+      --popover-foreground: oklch(0.2101 0.0318 264.6645);
+      --primary: oklch(0.6716 0.1368 48.5130);
+      --primary-foreground: oklch(1.0000 0 0);
+      --secondary: oklch(0.5360 0.0398 196.0280);
+      --secondary-foreground: oklch(1.0000 0 0);
+      --muted: oklch(0.9670 0.0029 264.5419);
+      --muted-foreground: oklch(0.5510 0.0234 264.3637);
+      --accent: oklch(0.9491 0 0);
+      --accent-foreground: oklch(0.2101 0.0318 264.6645);
+      --destructive: oklch(0.6368 0.2078 25.3313);
+      --destructive-foreground: oklch(0.9851 0 0);
+      --border: oklch(0.9276 0.0058 264.5313);
+      --input: oklch(0.9276 0.0058 264.5313);
+      --ring: oklch(0.6716 0.1368 48.5130);
+      --chart-1: oklch(0.5940 0.0443 196.0233);
+      --chart-2: oklch(0.7214 0.1337 49.9802);
+      --chart-3: oklch(0.8721 0.0864 68.5474);
+      --chart-4: oklch(0.6268 0 0);
+      --chart-5: oklch(0.6830 0 0);
+      --font-sans: "JetBrains Mono", ui-monospace, monospace;
+      --font-ui: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      --radius: 0.75rem;
+      --tracking-normal: 0rem;
+      --shadow: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 1px 2px -1px hsl(0 0% 0% / 0.05);
+    }
+
+    .dark {
+      --background: oklch(0.1797 0.0043 308.1928);
+      --foreground: oklch(0.8109 0 0);
+      --card: oklch(0.1822 0 0);
+      --card-foreground: oklch(0.8109 0 0);
+      --popover: oklch(0.1797 0.0043 308.1928);
+      --popover-foreground: oklch(0.8109 0 0);
+      --primary: oklch(0.7214 0.1337 49.9802);
+      --primary-foreground: oklch(0.1797 0.0043 308.1928);
+      --secondary: oklch(0.5940 0.0443 196.0233);
+      --secondary-foreground: oklch(0.1797 0.0043 308.1928);
+      --muted: oklch(0.2520 0 0);
+      --muted-foreground: oklch(0.6268 0 0);
+      --accent: oklch(0.3211 0 0);
+      --accent-foreground: oklch(0.8109 0 0);
+      --destructive: oklch(0.5940 0.0443 196.0233);
+      --destructive-foreground: oklch(0.1797 0.0043 308.1928);
+      --border: oklch(0.2520 0 0);
+      --input: oklch(0.2520 0 0);
+      --ring: oklch(0.7214 0.1337 49.9802);
+      --chart-1: oklch(0.5940 0.0443 196.0233);
+      --chart-2: oklch(0.7214 0.1337 49.9802);
+      --chart-3: oklch(0.8721 0.0864 68.5474);
+      --chart-4: oklch(0.6268 0 0);
+      --chart-5: oklch(0.6830 0 0);
+      --shadow: 0px 1px 4px 0px hsl(0 0% 0% / 0.05), 0px 1px 2px -1px hsl(0 0% 0% / 0.05);
+    }
+
+    body {
+      font-family: var(--font-sans);
+      letter-spacing: var(--tracking-normal);
+      background: var(--background);
+      color: var(--foreground);
+      padding: 24px;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 6px 4px 0;
+    }
+
+    .titleRow {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--muted-foreground);
+      line-height: 1.35;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 22px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--card-foreground);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .price {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--card-foreground);
+      white-space: nowrap;
+    }
+
+    .code {
+      font-size: 11px;
+      color: var(--muted-foreground);
+      opacity: 0.9;
+      word-break: break-word;
+    }
+
+    .actionsRow {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: var(--muted-foreground);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .btn {
+      appearance: none;
+      border: 1px solid color-mix(in oklab, var(--primary) 55%, var(--border) 45%);
+      background: color-mix(in oklab, var(--primary) 18%, var(--card) 82%);
+      color: var(--foreground);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 120ms ease;
+      white-space: nowrap;
+      font-family: var(--font-ui);
+    }
+
+    .btn:hover {
+      background: color-mix(in oklab, var(--primary) 22%, var(--card) 78%);
+    }
+
+    .chart {
+      height: 168px;
+      margin-top: 4px;
+      padding-top: 4px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted-foreground);
+      margin-top: 40px;
+      font-size: 13px;
+    }
+
+    #empty {
+      display: none;
+    }
+  </style>
+</head>
+
+<body class="dark">
+
+<div class="page">
+  <div class="header">
+    <div class="titleRow">
+      <div class="title">TruePrice Dashboard</div>
+    </div>
+    <div class="subtitle">Your tracked Amazon products with price history. Hover charts to see exact prices by date.</div>
+  </div>
+
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="empty">No tracked products yet.</div>
+</div>
+
+<script src="dashboard.js"></script>
+
+</body>
+</html>
