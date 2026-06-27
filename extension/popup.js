@@ -122,19 +122,19 @@ async function loadPriceHistory() {
         showError("Please open an Amazon product page to track prices.");
         return;
     }
-    
+
     let data;
     try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
-        
+
         const response = await fetch("http://localhost:8000/api/get/price", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ uid: uid }),
             signal: controller.signal
         });
-        
+
         clearTimeout(timeoutId);
         if (!response.ok) {
             const text = await response.text().catch(() => "");
@@ -152,7 +152,7 @@ async function loadPriceHistory() {
         showError(`Could not reach backend server. ${msg}`);
         return;
     }
-        
+
     try {
         if (data && data.status === "success" && Array.isArray(data.response) && data.response.length > 0) {
             processData(uid, data.response);
@@ -240,7 +240,7 @@ function renderData(history) {
         return;
     }
 
-    const current = prices[prices.length - 1]; 
+    const current = prices[prices.length - 1];
     const previous = prices.length > 1 ? prices[prices.length - 2] : current;
 
     let pctChange = 0;
@@ -262,7 +262,7 @@ function renderData(history) {
         changeEl.style.backgroundColor = 'color-mix(in oklab, var(--destructive) 18%, var(--card) 82%)';
         changeEl.style.borderColor = 'color-mix(in oklab, var(--destructive) 55%, var(--border) 45%)';
         changeEl.style.color = 'var(--card-foreground)';
-    } else { 
+    } else {
         changeEl.innerText = `0.0%`;
         changeEl.style.backgroundColor = 'color-mix(in oklab, var(--muted) 55%, var(--card) 45%)';
         changeEl.style.borderColor = 'color-mix(in oklab, var(--border) 75%, transparent 25%)';
@@ -334,7 +334,7 @@ function renderData(history) {
                     return 5;
                 },
                 fill: true,
-                tension: 0.3 
+                tension: 0.3
             }]
         },
         options: {
@@ -378,14 +378,14 @@ function renderData(history) {
                 }
             },
             scales: {
-                x: { 
-                    grid: { display: false }, 
+                x: {
+                    grid: { display: false },
                     offset: true,
-                    ticks: { maxTicksLimit: 4, color: getThemeColor('--muted-foreground', '#9da1a6'), font: { family: 'Adwaita Sans', weight: '600' } } 
+                    ticks: { maxTicksLimit: 4, color: getThemeColor('--muted-foreground', '#9da1a6'), font: { family: 'Adwaita Sans', weight: '600' } }
                 },
-                y: { 
-                    border: { display: false }, 
-                    grid: { color: 'rgba(255, 255, 255, 0.08)' }, 
+                y: {
+                    border: { display: false },
+                    grid: { color: 'rgba(255, 255, 255, 0.08)' },
                     ticks: { maxTicksLimit: 4, color: getThemeColor('--muted-foreground', '#9da1a6'), font: { family: 'Adwaita Sans', weight: '600' }, callback: function(value) { return '₹' + value.toLocaleString('en-IN'); } },
                     min: yMin,
                     max: yMax

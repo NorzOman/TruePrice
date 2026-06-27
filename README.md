@@ -34,8 +34,8 @@ TruePrice is a lightweight Chrome/Brave/Edge extension that captures product pri
 
 ## Authors
 
-* Raahim
-* Pramath
-* Vedanga
+* Raahim Shaikh
+* Pramath Kelkar
+* Vedanga Bendra
 * Norz Oman
 
